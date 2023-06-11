@@ -1,4 +1,4 @@
-import { Cell, Digit, Field, isDigit } from './type'
+import { Cell, Digit, Field, Option, isDigit } from './type'
 
 export const createField = () => {
   const field:Cell[][] = [];
@@ -84,13 +84,13 @@ export const affectedBlock = (x: number, y: number) => {
 
 export const isOkField = (field: Field) => field.every(v => v.every(c => c.size !== 0));
 
-export const getFirstBranch = (field: Field): [isSolved: false, x: number, y: number, targetCel: Digit[]] | [isSolved: true] => {
+export const getFirstBranch = (field: Field): Option<[x: number, y: number, targetCel: Digit[]]> => {
   for (const {x, y} of posList()) {
     if (field[y][x].size > 1) {
-      return [false, x, y, [...field[y][x].values()]];
+      return [true, [x, y, [...field[y][x].values()]]];
     }
   }
-  return [true];
+  return [false];
 }
 
 export const showData = (field: Field) => {

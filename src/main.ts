@@ -9,9 +9,9 @@ import {
   posList,
   affectedBlock
 } from './utils';
-import { Cell, Digit, Field } from './type';
+import { Field, Option } from './type';
 
-const shave = (field: Field): [isOk: true, shavedField: Field] | [isOk: false] => {
+const shave = (field: Field): Option<Field> => {
   let copiedField = copy(field);
   let isEdited = true;
   while (isEdited) {
@@ -69,12 +69,12 @@ const shave = (field: Field): [isOk: true, shavedField: Field] | [isOk: false] =
     return [false];
   }
 };
-const solve = (field: Field): [isOk: true, ansField: Field] | [isOk: false] => {
+const solve = (field: Field): Option<Field> => {
   const [isOkFlag, shavedField] = shave(field);
   if (!isOkFlag) return [false];
-  const [isSolved, x, y, targetCell] = getFirstBranch(shavedField);
-  if (isSolved) return [true, shavedField];
-
+  const [hasBranch, result] = getFirstBranch(shavedField);
+  if (!hasBranch) return [true, shavedField];
+  const [x, y, targetCell] = result;
   for (const assumption of targetCell) {
     shavedField[y][x] = new Set([assumption]);
     const [isOkFlag, ansField] = solve(shavedField);
