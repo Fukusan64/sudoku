@@ -13,9 +13,9 @@
 
 
 ________________________________________________________
-Executed in  431.35 millis    fish           external
-   usr time  504.22 millis    1.21 millis  503.01 millis
-   sys time   31.84 millis    0.43 millis   31.41 millis
+Executed in  558.56 millis    fish           external
+   usr time  558.48 millis    0.00 millis  558.48 millis
+   sys time   36.57 millis    2.18 millis   34.38 millis
 
 916|243|875
 425|867|193
@@ -31,7 +31,7 @@ Executed in  431.35 millis    fish           external
 
 
 ________________________________________________________
-Executed in  132.99 millis    fish           external
-   usr time  196.37 millis    0.00 millis  196.37 millis
-   sys time   14.71 millis    1.09 millis   13.62 millis
+Executed in  164.30 millis    fish           external
+   usr time  209.44 millis    0.00 micros  209.44 millis
+   sys time   20.55 millis  649.00 micros   19.90 millis
 

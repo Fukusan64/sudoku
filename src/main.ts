@@ -1,85 +1,77 @@
 import { readFileSync } from 'node:fs';
 import {
-  affectedCoordinates,
+  affectedList,
   copy,
   isOkField,
   readField,
   getFirstBranch,
   showData,
-  posList,
-  affectedBlock
+  posList
 } from './utils';
-import { Field, Option } from './type';
+import { Cell, Field, Option } from './type';
 
-const shave = (field: Field): Option<Field> => {
+const getUniqVal = (target: Cell, otherCells: Cell[]): Option<Cell> => {
+  const t = copy(target);
+  let isDeleted = false;
+  otherCells.forEach(other => {
+    for (const d of other) {
+      if (t.delete(d)) isDeleted = true;
+    }
+  });
+
+  if (isDeleted && t.size > 0) return [true, t];
+  return [false];
+};
+
+const shave = (field: Field<Cell>): Option<Field<Cell>> => {
   let copiedField = copy(field);
   let isEdited = true;
   while (isEdited) {
     isEdited = false;
-    for (const { x, y } of posList()) {
+    posList.forEach(({ x, y }) => {
       if (copiedField[y][x].size === 1) {
         const targetVal = copiedField[y][x].values().next().value;
-        for (const { x: tx, y: ty } of affectedCoordinates(x, y)) {
-          if (copiedField[ty][tx].delete(targetVal)) {
-            isEdited = true;
-          }
-        }
+        affectedList[y][x].allPositions.forEach(({x, y}) => {
+          if (copiedField[y][x].delete(targetVal)) isEdited = true;
+        });
       } else {
-        // row
-        {
-          const copiedCurrentCell = copy(copiedField[y][x]);
-          for (let tx = 0; tx < 9; tx++) {
-            if (tx === x) continue;
-            copiedField[y][tx].forEach(digit => copiedCurrentCell.delete(digit));
-          }
-          if (copiedCurrentCell.size > 0 && copiedCurrentCell.size < copiedField[y][x].size) {
+        const { allPositions: _, ...positionList } = affectedList[y][x];
+        Object.values(positionList).forEach(ps => {  
+          const [hasAns, newCell] = getUniqVal(
+            copiedField[y][x],
+            ps.map(({x, y}) => copiedField[y][x]),
+          );
+          if (hasAns) {
+            copiedField[y][x] = newCell;
             isEdited = true;
-            copiedField[y][x] = copiedCurrentCell;
           }
-        }
-        // colum
-        {
-          const copiedCurrentCell = copy(copiedField[y][x]);
-          for (let ty = 0; ty < 9; ty++) {
-            if (ty === y) continue;
-            copiedField[ty][x].forEach(digit => copiedCurrentCell.delete(digit));
-          }
-          if (copiedCurrentCell.size > 0 && copiedCurrentCell.size < copiedField[y][x].size) {
-            isEdited = true;
-            copiedField[y][x] = copiedCurrentCell;
-          }
-        }
-        // block
-        {
-          const copiedCurrentCell = copy(copiedField[y][x]);
-          for (const {x: tx, y: ty } of affectedBlock(x, y)) {
-            copiedField[ty][tx].forEach(digit => copiedCurrentCell.delete(digit));
-          }
-          if (copiedCurrentCell.size > 0 && copiedCurrentCell.size < copiedField[y][x].size) {
-            isEdited = true;
-            copiedField[y][x] = copiedCurrentCell;
-          }
-        }
+        });
       }
-    }
-  }
+    });
+  };
+
   if (isOkField(copiedField)) {
     return [true, copiedField];
   } else {
     return [false];
   }
 };
-const solve = (field: Field): Option<Field> => {
+
+const solve = (field: Field<Cell>): Option<Field<Cell>> => {
   const [isOkFlag, shavedField] = shave(field);
   if (!isOkFlag) return [false];
+  
   const [hasBranch, result] = getFirstBranch(shavedField);
   if (!hasBranch) return [true, shavedField];
+  
   const [x, y, targetCell] = result;
+  
   for (const assumption of targetCell) {
     shavedField[y][x] = new Set([assumption]);
     const [isOkFlag, ansField] = solve(shavedField);
     if (isOkFlag) return [true, ansField];
   }
+  
   return [false];
 };
 

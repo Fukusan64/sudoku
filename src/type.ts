@@ -7,14 +7,26 @@ export const isDigit = (value: unknown): value is Digit => {
 };
 export type Cell = Set<Digit>;
 export type Option<T> = [isOK: true, value: T] | [isOk: false];
-export type Field = [
-  [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell],
-  [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell],
-  [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell],
-  [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell],
-  [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell],
-  [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell],
-  [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell],
-  [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell],
-  [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell],
+export type Field<T> = [
+  [T, T, T, T, T, T, T, T, T],
+  [T, T, T, T, T, T, T, T, T],
+  [T, T, T, T, T, T, T, T, T],
+  [T, T, T, T, T, T, T, T, T],
+  [T, T, T, T, T, T, T, T, T],
+  [T, T, T, T, T, T, T, T, T],
+  [T, T, T, T, T, T, T, T, T],
+  [T, T, T, T, T, T, T, T, T],
+  [T, T, T, T, T, T, T, T, T],
+];
+
+export type ReadonlyField<T> = readonly [
+  readonly [T, T, T, T, T, T, T, T, T],
+  readonly [T, T, T, T, T, T, T, T, T],
+  readonly [T, T, T, T, T, T, T, T, T],
+  readonly [T, T, T, T, T, T, T, T, T],
+  readonly [T, T, T, T, T, T, T, T, T],
+  readonly [T, T, T, T, T, T, T, T, T],
+  readonly [T, T, T, T, T, T, T, T, T],
+  readonly [T, T, T, T, T, T, T, T, T],
+  readonly [T, T, T, T, T, T, T, T, T],
 ];
